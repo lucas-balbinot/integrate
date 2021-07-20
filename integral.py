@@ -9,26 +9,25 @@ import argparse
 
 class Integral:
 
-    def __init__(self, file=None, xspacement=None, y=None, x=None) -> None:
-        self.prs = argparse.ArgumentParser()
-        if file == None:
+    def __init__(self, file=None, y=1, x=0, cmd=False) -> None:
+        if cmd:
+            self.prs = argparse.ArgumentParser()
+            
             # set all the arguments
             self.prs.add_argument('-f', '--files', nargs='+', type=str, required=True)
-            self.prs.add_argument('-xs', '--xspacement', type=int, default=5)
+            self.prs.add_argument('-y', '--yAxis', nargs='+', type=int, default=[1])
             self.prs.add_argument('-x', '--xAxis', type=int, default=0)
-            self.prs.add_argument('-y', '--yAxis', nargs='+', type=int, default=1)
             # parse
             args = self.prs.parse_args()
 
             self.files = self.open_files( args.files )
-            self.xs = args.xspacement
-            self.x = args.xAxis
             self.y = args.yAxis
+            self.x = args.xAxis
+
         else:
-            self.file = pd.read_csv( file )
-            self.xs = xspacement
+            self.files = file if isinstance(file, list) else [file]
+            self.y = y if isinstance(y,list) else [y]
             self.x = x
-            self.y = y
         
 
     def open_files(self, files):
@@ -40,10 +39,10 @@ class Integral:
         return handlers
 
 
-    def _calculate(self, file, y):
+    def _calculate(self, file, y, x):
         args = {
             'y': file[ file.columns[y] ],
-            'dx': self.xs 
+            'x': file[ file.columns[x] ]
         }
         return (simps(**args) + trapz(**args) ) / 2
 
@@ -54,7 +53,7 @@ class Integral:
         for file in self.files:
             area = []
             for y in self.y:
-                area.append( self._calculate( file, y ) )
+                area.append( self._calculate( file, y, self.x ) )
             
             file_areas.append( area[:] )
             area.clear()
@@ -68,5 +67,5 @@ class Integral:
 
 
 if __name__ == '__main__':
-    integ = Integral().integrate_files()
+    integ = Integral(cmd=True).integrate_files()
     print( integ[0] if len(integ)==1 else integ )
