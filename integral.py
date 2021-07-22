@@ -13,8 +13,8 @@ class Integral:
             self.prs = argparse.ArgumentParser(description='Integrate Module - For calculating the area under the curve.')
             
             # set all the arguments
-            self.prs.add_argument('-f', '--files', nargs='+', type=str, required=True, help='Path to the data file.')
-            self.prs.add_argument('-y', '--yAxis', nargs='+', type=int, default=[1], help='Index for the y axis. (Index starting in 0).')
+            self.prs.add_argument('-f', '--files', nargs='+', type=str, required=True, help='Path to the data file. It can be multiple files.')
+            self.prs.add_argument('-y', '--yAxis', nargs='+', type=int, default=[1], help='Index for the y axis. Can be more than 1 value (Index starting in 0).')
             self.prs.add_argument('-x', '--xAxis', type=int, default=0, help='Index for the x axis.')
             # parse
             args = self.prs.parse_args()
