@@ -31,3 +31,8 @@ res = Integral(df,y=[1,2,3],x=0).integrate_files()
 ### Methods
 * integrate_files - return the area under the curve.
 * stats - return the stats - the same from the describe method of pandas.
+
+## Dependencies
+* pandas
+* scipy
+* numpy

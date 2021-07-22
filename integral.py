@@ -6,17 +6,16 @@ import pandas as pd
 
 import argparse
 
-
 class Integral:
 
     def __init__(self, file=None, y=1, x=0, cmd=False) -> None:
         if cmd:
-            self.prs = argparse.ArgumentParser()
+            self.prs = argparse.ArgumentParser(description='Integrate Module - For calculating the area under the curve.')
             
             # set all the arguments
-            self.prs.add_argument('-f', '--files', nargs='+', type=str, required=True)
-            self.prs.add_argument('-y', '--yAxis', nargs='+', type=int, default=[1])
-            self.prs.add_argument('-x', '--xAxis', type=int, default=0)
+            self.prs.add_argument('-f', '--files', nargs='+', type=str, required=True, help='Path to the data file.')
+            self.prs.add_argument('-y', '--yAxis', nargs='+', type=int, default=[1], help='Index for the y axis. (Index starting in 0).')
+            self.prs.add_argument('-x', '--xAxis', type=int, default=0, help='Index for the x axis.')
             # parse
             args = self.prs.parse_args()
 
