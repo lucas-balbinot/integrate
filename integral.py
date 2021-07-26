@@ -16,11 +16,11 @@ class Integral:
             self.prs.add_argument('-y', '--yAxis', nargs='+', type=int, default=[2], help='Index for the y-axis. Can be more than 1 value (Index starting in 1).')
             self.prs.add_argument('-x', '--xAxis', type=int, default=1, help='Index for the x-axis.')
             # parse
-            args = self.prs.parse_args()
+            self.args = self.prs.parse_args()
 
-            self.files = self.open_files( args.files )
-            self.y = self._convert_human_indexing(args.yAxis)
-            self.x = self._convert_human_indexing(args.xAxis)
+            self.files = self.open_files( self.args.files )
+            self.y = self._convert_human_indexing(self.args.yAxis)
+            self.x = self._convert_human_indexing(self.args.xAxis)
 
         else:
             # if the software is being used as a module
@@ -28,7 +28,7 @@ class Integral:
             self.y = y if isinstance(y,list) else [y]
             self.y = self._convert_human_indexing(self.y)
             self.x = self._convert_human_indexing(x)
-        
+
 
     def _convert_human_indexing(self, val):
         if isinstance(val, int):
@@ -43,7 +43,7 @@ class Integral:
                 if val[index]<1:
                     raise ValueError('Invalid Value. The indexing start in 1, make sure your value can be an index.')
                 val[index] -= 1
-                return val
+            return val
         else:
             raise TypeError('Invalid Type.\nThe type for y-axis or x-axis is invalid')
         
@@ -93,6 +93,15 @@ class Integral:
             return file.describe()
 
 
+    def prettify(self, int_arrs):
+        for i, file in enumerate(self.args.files):
+            print( f'\n{f"VALUES FOR {file}":^30}' )
+            for j, y in enumerate(self.y):
+                print(f'Y[{y+1}]: {int_arrs[i][j]}')
+
+
 if __name__ == '__main__':
-    integ = Integral(cmd=True).integrate_files()
-    print( integ[0] if len(integ)==1 else integ )
+
+    integ_cls = Integral(cmd=True)
+    vals = integ_cls.integrate_files()
+    integ_cls.prettify(vals)
