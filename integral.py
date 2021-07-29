@@ -7,7 +7,7 @@ import argparse
 
 class Integral:
 
-    def __init__(self, file=None, y=1, x=0, cmd=False) -> None:
+    def __init__(self, file=None, y=1, x=0, method='simpson',cmd=False) -> None:
         if cmd:
             self.prs = argparse.ArgumentParser(description='Integrate Module - For calculating the area under the curve.')
             
@@ -15,19 +15,21 @@ class Integral:
             self.prs.add_argument('-f', '--files', nargs='+', type=str, required=True, help='Path to the data file. It can be multiple files.')
             self.prs.add_argument('-y', '--yAxis', nargs='+', type=int, default=[2], help='Index for the y-axis. Can be more than 1 value (Index starting in 1).')
             self.prs.add_argument('-x', '--xAxis', type=int, default=1, help='Index for the x-axis.')
+            self.prs.add_argument('-m', '--method', action='store', choices=['simpson', 'trapz', 'mean'], default='simpson', help='The method that is goind to be used for the calculation. It can be the simpson rule or the trapezoidal rule.')
             # parse
             self.args = self.prs.parse_args()
 
             self.files = self.open_files( self.args.files )
             self.y = self._convert_human_indexing(self.args.yAxis)
             self.x = self._convert_human_indexing(self.args.xAxis)
-
+            self.method = self.args.method
         else:
             # if the software is being used as a module
             self.files = file if isinstance(file, list) else [file]
             self.y = y if isinstance(y,list) else [y]
             self.y = self._convert_human_indexing(self.y)
             self.x = self._convert_human_indexing(x)
+            self.method = method
 
 
     def _convert_human_indexing(self, val):
@@ -63,8 +65,13 @@ class Integral:
             'y': file[ file.columns[y] ] * 5,
             'x': file[ file.columns[x] ]
         }
-        # the result is the mean of simpson and trapezoidal methods
-        return (simps(**args) + trapz(**args) ) / 2
+        # the result is calculated using the method chosen before
+        if self.method == 'simpson':
+            return simps(**args)
+        elif self.method == 'trapz':
+            return trapz(**args)
+        else:
+            return (simps(**args) + trapz(**args) ) / 2
 
 
     def integrate_files( self ):
