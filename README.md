@@ -27,6 +27,7 @@ res = Integral(df,y=[1,2,3],x=0).integrate_files()
 * f - stands for files. Gets the path to the files, or an array of dataframes.
 * y - the indexes of y axis.
 * x - the index of x axis.
+* m - stands for the methods that you can use to perform the calculation. The choices are simpson rule, trapezoidal rule or the mean of both.
 
 ### Methods
 * integrate_files - return the area under the curve.
